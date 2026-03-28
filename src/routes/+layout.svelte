@@ -1,16 +1,19 @@
 <script lang="ts">
-	import { page } from '$app/state';
-	import { locales, localizeHref } from '$lib/paraglide/runtime';
+	import '../app.css';
 	import favicon from '$lib/assets/favicon.svg';
+	import { page } from '$app/state';
+	import { overwriteGetLocale, getLocaleForUrl } from '$lib/paraglide/runtime';
 
 	let { children } = $props();
+
+	// Make all m.*() message functions reactive to URL-based locale changes.
+	// getLocaleForUrl() reads from the reactive page.url, so any locale
+	// switch via URL navigation re-evaluates all translations automatically.
+	overwriteGetLocale(() => getLocaleForUrl(page.url.href));
 </script>
 
-<svelte:head><link rel="icon" href={favicon} /></svelte:head>
-{@render children()}
+<svelte:head>
+	<link rel="icon" href={favicon} />
+</svelte:head>
 
-<div style="display:none">
-	{#each locales as locale}
-		<a href={localizeHref(page.url.pathname, { locale })}>{locale}</a>
-	{/each}
-</div>
+{@render children()}

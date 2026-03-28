@@ -1,16 +1,19 @@
-import { betterAuth } from 'better-auth/minimal';
+import { betterAuth } from 'better-auth';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import { sveltekitCookies } from 'better-auth/svelte-kit';
+import { passkey } from '@better-auth/passkey';
 import { env } from '$env/dynamic/private';
 import { getRequestEvent } from '$app/server';
 import { db } from '$lib/server/db';
+import { getBaseUrl } from '$lib/url';
 
 export const auth = betterAuth({
-	baseURL: env.ORIGIN,
+	baseURL: getBaseUrl(),
 	secret: env.BETTER_AUTH_SECRET,
 	database: drizzleAdapter(db, { provider: 'pg' }),
 	emailAndPassword: { enabled: true },
 	plugins: [
-		sveltekitCookies(getRequestEvent) // make sure this is the last plugin in the array
+		passkey(),
+		sveltekitCookies(getRequestEvent) // must be last plugin
 	]
 });
