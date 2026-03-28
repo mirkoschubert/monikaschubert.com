@@ -16,6 +16,8 @@
 		"db:generate": "drizzle-kit generate",
 		"db:migrate": "drizzle-kit migrate",
 		"db:studio": "drizzle-kit studio",
+		"db:push:prod": "dotenv -e .env.production -- drizzle-kit push",
+		"db:migrate:prod": "dotenv -e .env.production -- drizzle-kit migrate",
 		"auth:schema": "better-auth generate --config src/lib/server/auth.ts --output src/lib/server/db/auth.schema.ts --yes",
 		"release": "zsh scripts/release.sh"
 	},
@@ -34,6 +36,7 @@
 		"better-auth": "~1.5.6",
 		"bits-ui": "^2.16.4",
 		"clsx": "^2.1.1",
+		"dotenv-cli": "^11.0.0",
 		"drizzle-kit": "^0.31.8",
 		"drizzle-orm": "^0.45.1",
 		"prettier": "^3.8.1",

@@ -2,5 +2,8 @@
   "framework": "sveltekit",
   "installCommand": "pnpm install",
   "buildCommand": "pnpm build",
-  "outputDirectory": ".svelte-kit/output"
+  "outputDirectory": ".svelte-kit/output",
+  "git": {
+    "deploymentEnabled": false
+  }
 }
