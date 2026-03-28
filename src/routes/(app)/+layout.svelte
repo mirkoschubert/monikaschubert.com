@@ -11,6 +11,8 @@
 		CalendarDays,
 		LayoutDashboard,
 		Users,
+		ShieldCheck,
+		Monitor,
 		Settings,
 		KeyRound,
 		LogOut,
@@ -37,6 +39,8 @@
 		if (path.startsWith('/studio/gallery')) return m.studio_gallery();
 		if (path.startsWith('/studio/exhibitions')) return m.studio_exhibitions();
 		if (path.startsWith('/studio/admin/users')) return m.studio_admin_users();
+		if (path.startsWith('/studio/admin/roles')) return m.studio_admin_roles();
+		if (path.startsWith('/studio/admin/sessions')) return m.admin_sessions_title();
 		if (path.startsWith('/studio/settings')) return m.studio_settings();
 		return m.studio_dashboard();
 	});
@@ -118,6 +122,7 @@
 				</Sidebar.GroupContent>
 			</Sidebar.Group>
 
+			{#if data.user.role === 'admin'}
 			<Sidebar.Separator />
 
 			<Sidebar.Group>
@@ -137,9 +142,36 @@
 								{/snippet}
 							</Sidebar.MenuButton>
 						</Sidebar.MenuItem>
+						<Sidebar.MenuItem>
+							<Sidebar.MenuButton
+								isActive={page.url.pathname.includes('/studio/admin/roles')}
+								tooltipContent={m.studio_admin_roles()}
+							>
+								{#snippet child({ props })}
+									<a href="/studio/admin/roles" {...props}>
+										<ShieldCheck />
+										<span>{m.studio_admin_roles()}</span>
+									</a>
+								{/snippet}
+							</Sidebar.MenuButton>
+						</Sidebar.MenuItem>
+						<Sidebar.MenuItem>
+							<Sidebar.MenuButton
+								isActive={page.url.pathname.includes('/studio/admin/sessions')}
+								tooltipContent={m.admin_sessions_title()}
+							>
+								{#snippet child({ props })}
+									<a href="/studio/admin/sessions" {...props}>
+										<Monitor />
+										<span>{m.admin_sessions_title()}</span>
+									</a>
+								{/snippet}
+							</Sidebar.MenuButton>
+						</Sidebar.MenuItem>
 					</Sidebar.Menu>
 				</Sidebar.GroupContent>
 			</Sidebar.Group>
+			{/if}
 		</Sidebar.Content>
 
 		<!-- Footer: avatar with initials (visible when collapsed), name + email when expanded -->

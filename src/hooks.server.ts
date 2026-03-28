@@ -3,6 +3,7 @@ import { building } from '$app/environment';
 import { auth } from '$lib/server/auth';
 import { svelteKitHandler } from 'better-auth/svelte-kit';
 import type { Handle } from '@sveltejs/kit';
+import type { UserWithRole } from 'better-auth/plugins/admin';
 import { getTextDirection } from '$lib/paraglide/runtime';
 import { paraglideMiddleware } from '$lib/paraglide/server';
 
@@ -23,7 +24,7 @@ const handleBetterAuth: Handle = async ({ event, resolve }) => {
 
 	if (session) {
 		event.locals.session = session.session;
-		event.locals.user = session.user;
+		event.locals.user = session.user as UserWithRole;
 	}
 
 	return svelteKitHandler({ event, resolve, auth, building });

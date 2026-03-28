@@ -51,4 +51,24 @@ export const exhibition = pgTable(
 	(table) => [index('exhibition_date_idx').on(table.dateFrom)]
 );
 
+export const role = pgTable('role', {
+	id: text('id').primaryKey(), // 'admin' | 'editor'
+	label: text('label').notNull(),
+});
+
+export const rolePermission = pgTable(
+	'role_permission',
+	{
+		id: serial('id').primaryKey(),
+		roleId: text('role_id').notNull().references(() => role.id, { onDelete: 'cascade' }),
+		resource: text('resource').notNull(),
+		action: text('action').notNull(),
+		allowed: boolean('allowed').notNull().default(false),
+	},
+	(table) => [
+		index('role_permission_role_idx').on(table.roleId),
+		index('role_permission_resource_idx').on(table.resource),
+	]
+);
+
 export * from './auth.schema';

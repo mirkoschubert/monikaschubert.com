@@ -7,6 +7,29 @@ Format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [0.2.0] - 2026-03-28
+
+### Added
+- Role-based permissions system with DB-driven capability matrix (role/role_permission tables)
+- Roles admin page with Switch matrix to toggle capabilities per role and resource
+- Session management page: list active sessions grouped by user, revoke single or all sessions
+- User management extended: create, edit (name/email), ban/unban, set password, delete
+- Password generator and visibility toggle on all password fields
+- Admin plugin integration (Better Auth) with first-user auto-admin via database hook
+- Capability guards on all admin actions (create, update, delete, ban, set-role, set-password, revoke)
+- Settings page now fully editable for all authenticated users (name and email)
+- Vercel deployment pipeline: production deploys triggered by version tags only
+- Release script (scripts/release.sh) with CHANGELOG validation and GitHub release creation
+
+### Fixed
+- Language switcher now updates all translations instantly without page reload
+- Admin creating a new user no longer logs out the current session
+- Session revoke now correctly uses session token instead of session ID
+- Expired sessions filtered from active sessions list
+- Unauthenticated access to studio routes redirects to /login instead of returning 403
+
+---
+
 ## [0.1.0] - 2026-03-28
 
 ### Added
