@@ -1,28 +1,35 @@
 <script lang="ts">
-	import { locales, localizeHref, deLocalizeUrl } from '$lib/paraglide/runtime';
-	import { page } from '$app/state';
-	import * as Sidebar from '$lib/components/ui/sidebar';
-	import PublicSidebar from '$lib/components/public/public-sidebar.svelte';
-	import PublicHeader from '$lib/components/public/public-header.svelte';
-	import type { LayoutData } from './$types';
+  import { locales, localizeHref, deLocalizeUrl } from '$lib/paraglide/runtime'
+  import { page } from '$app/state'
+  import * as Sidebar from '$lib/components/ui/sidebar'
+  import PublicSidebar from '$lib/components/public/public-sidebar.svelte'
+  import PublicHeader from '$lib/components/public/public-header.svelte'
+  import type { LayoutData } from './$types'
+  import { UmamiAnalyticsEnv } from '@lukulent/svelte-umami'
 
-	let { children, data }: { children: any; data: LayoutData } = $props();
+  let { children, data }: { children: any; data: LayoutData } = $props()
 </script>
 
 <svelte:head>
-	{#each locales as locale}
-		<link rel="alternate" hreflang={locale} href={localizeHref(deLocalizeUrl(page.url).pathname, { locale })} />
-	{/each}
+  {#each locales as locale}
+    <link
+      rel="alternate"
+      hreflang={locale}
+      href={localizeHref(deLocalizeUrl(page.url).pathname, { locale })}
+    />
+  {/each}
 </svelte:head>
 
+<UmamiAnalyticsEnv />
+
 <Sidebar.Provider>
-	<PublicSidebar />
+  <PublicSidebar />
 
-	<Sidebar.Inset>
-		<PublicHeader user={data.user} />
+  <Sidebar.Inset>
+    <PublicHeader user={data.user} />
 
-		<main>
-			{@render children()}
-		</main>
-	</Sidebar.Inset>
+    <main>
+      {@render children()}
+    </main>
+  </Sidebar.Inset>
 </Sidebar.Provider>
