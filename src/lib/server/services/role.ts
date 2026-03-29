@@ -2,12 +2,13 @@ import { db } from '$lib/server/db'
 import { role, rolePermission } from '$lib/server/db/schema'
 import { eq, and } from 'drizzle-orm'
 
-export const RESOURCES = ['artwork', 'exhibition', 'user', 'session'] as const
+export const RESOURCES = ['artwork', 'exhibition', 'user', 'session', 'page'] as const
 export const ACTIONS: Record<typeof RESOURCES[number], string[]> = {
 	artwork:    ['create', 'update', 'delete', 'publish'],
 	exhibition: ['create', 'update', 'delete', 'publish'],
 	user:       ['list', 'create', 'update', 'delete', 'set-role', 'ban', 'set-password'],
 	session:    ['list', 'revoke'],
+	page:       ['create', 'update', 'delete'],
 }
 
 export type Resource = typeof RESOURCES[number]
@@ -59,24 +60,39 @@ export async function setPermission(roleId: string, resource: string, action: st
 // Seed default roles and permissions if not yet present
 export async function seedRoles() {
 	const existing = await db.select().from(role)
-	if (existing.length > 0) return
 
-	await db.insert(role).values([
-		{ id: 'admin', label: 'Admin' },
-		{ id: 'editor', label: 'Editor' },
-	])
+	if (existing.length === 0) {
+		await db.insert(role).values([
+			{ id: 'admin', label: 'Admin' },
+			{ id: 'editor', label: 'Editor' },
+		])
+	}
 
-	const adminPermissions: { roleId: string; resource: string; action: string; allowed: boolean }[] = []
-	const editorPermissions: { roleId: string; resource: string; action: string; allowed: boolean }[] = []
+	// Ensure all resource/action pairs exist (handles new resources added after initial seed)
+	const existingPerms = await db.select().from(rolePermission)
+	const toInsert: { roleId: string; resource: string; action: string; allowed: boolean }[] = []
 
 	for (const [resource, actions] of Object.entries(ACTIONS)) {
 		for (const action of actions) {
-			adminPermissions.push({ roleId: 'admin', resource, action, allowed: true })
-			// editors can only manage content
-			const editorAllowed = resource === 'artwork' || resource === 'exhibition'
-			editorPermissions.push({ roleId: 'editor', resource, action, allowed: editorAllowed })
+			for (const roleId of ['admin', 'editor']) {
+				const has = existingPerms.some(
+					(p) => p.roleId === roleId && p.resource === resource && p.action === action
+				)
+				if (!has) {
+					// editors can only manage content
+					const editorAllowed = resource === 'artwork' || resource === 'exhibition' || resource === 'page'
+					toInsert.push({
+						roleId,
+						resource,
+						action,
+						allowed: roleId === 'admin' ? true : editorAllowed,
+					})
+				}
+			}
 		}
 	}
 
-	await db.insert(rolePermission).values([...adminPermissions, ...editorPermissions])
+	if (toInsert.length > 0) {
+		await db.insert(rolePermission).values(toInsert)
+	}
 }

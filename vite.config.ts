@@ -12,7 +12,14 @@ export default defineConfig({
 		paraglideVitePlugin({
 			project: './project.inlang',
 			outdir: './src/lib/paraglide',
-			strategy: ['url', 'preferredLanguage', 'baseLocale']
+			strategy: ['url', 'preferredLanguage', 'baseLocale'],
+			urlPatterns: [
+				{ pattern: '/about',       localized: [['en', '/about'],       ['de', '/de/ueber-mich']] },
+				{ pattern: '/contact',     localized: [['en', '/contact'],     ['de', '/de/kontakt']] },
+				{ pattern: '/exhibitions', localized: [['en', '/exhibitions'], ['de', '/de/ausstellungen']] },
+				{ pattern: '/imprint',     localized: [['en', '/imprint'],     ['de', '/de/impressum']] },
+				{ pattern: '/privacy',     localized: [['en', '/privacy'],     ['de', '/de/datenschutz']] },
+			]
 		})
 	]
 });

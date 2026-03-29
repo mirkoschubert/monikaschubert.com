@@ -12,6 +12,7 @@
 		exhibition: m.admin_roles_resource_exhibition(),
 		user:       m.admin_roles_resource_user(),
 		session:    m.admin_roles_resource_session(),
+		page:       m.admin_roles_resource_page(),
 	}
 
 	const actionLabels: Record<string, string> = {

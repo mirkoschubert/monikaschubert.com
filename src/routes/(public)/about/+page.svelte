@@ -1,8 +1,9 @@
 <script lang="ts">
 	import * as m from '$lib/paraglide/messages.js';
+	import PageContent from '$lib/components/public/page-content.svelte';
+	import type { PageData } from './$types';
+
+	let { data }: { data: PageData } = $props();
 </script>
 
-<div class="mx-auto max-w-3xl px-4 py-12">
-	<h1 class="text-2xl font-semibold">{m.nav_about()}</h1>
-	<p class="mt-4 opacity-60">Coming soon.</p>
-</div>
+<PageContent title={m.nav_about()} content={data.page?.content ?? null} />

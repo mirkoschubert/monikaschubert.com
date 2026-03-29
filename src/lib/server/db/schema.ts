@@ -51,6 +51,26 @@ export const exhibition = pgTable(
 	(table) => [index('exhibition_date_idx').on(table.dateFrom)]
 );
 
+export const page = pgTable(
+	'page',
+	{
+		id: serial('id').primaryKey(),
+		title: jsonb('title').notNull().$type<LocalizedString>(),
+		slug: text('slug').notNull().unique(),
+		content: jsonb('content').$type<LocalizedString>(),
+		heroImage: text('hero_image'),
+		seoTitle: jsonb('seo_title').$type<LocalizedString>(),
+		seoDescription: jsonb('seo_description').$type<LocalizedString>(),
+		status: text('status').notNull().default('draft'),
+		createdAt: timestamp('created_at').notNull().defaultNow(),
+		updatedAt: timestamp('updated_at').notNull().defaultNow(),
+	},
+	(table) => [
+		index('page_slug_idx').on(table.slug),
+		index('page_status_idx').on(table.status),
+	]
+)
+
 export const role = pgTable('role', {
 	id: text('id').primaryKey(), // 'admin' | 'editor'
 	label: text('label').notNull(),

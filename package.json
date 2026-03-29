@@ -31,7 +31,9 @@
 		"@sveltejs/adapter-auto": "^7.0.0",
 		"@sveltejs/kit": "^2.50.2",
 		"@sveltejs/vite-plugin-svelte": "^6.2.4",
+		"@tailwindcss/typography": "^0.5.19",
 		"@tailwindcss/vite": "^4.2.2",
+		"@types/marked": "^6.0.0",
 		"@types/node": "^22",
 		"better-auth": "~1.5.6",
 		"bits-ui": "^2.16.4",
@@ -54,6 +56,7 @@
 	},
 	"dependencies": {
 		"@better-auth/passkey": "^1.5.6",
+		"marked": "^17.0.5",
 		"postgres": "^3.4.8"
 	}
 }
