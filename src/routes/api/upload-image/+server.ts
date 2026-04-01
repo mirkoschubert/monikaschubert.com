@@ -18,6 +18,7 @@ export const PUT: RequestHandler = async ({ request, locals }) => {
 		access: 'public',
 		contentType,
 		token: env.BLOB_READ_WRITE_TOKEN,
+		allowOverwrite: true,
 	})
 
 	return json({ url: blob.url })
