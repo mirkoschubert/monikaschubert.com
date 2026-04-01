@@ -5,6 +5,7 @@
   "outputDirectory": ".svelte-kit/output",
   "images": {
     "domains": ["hjftld4lmddu5uxe.public.blob.vercel-storage.com"],
+    "sizes": [640, 960, 1280, 1920, 2560],
     "formats": ["image/avif", "image/webp"],
     "minimumCacheTTL": 2592000
   }
