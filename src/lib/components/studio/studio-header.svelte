@@ -1,16 +1,12 @@
 <script lang="ts">
 	import { page } from '$app/state'
 	import * as m from '$lib/paraglide/messages.js'
-	import { locales, localizeHref, deLocalizeUrl, getLocaleForUrl } from '$lib/paraglide/runtime'
+	import { locales, getLocale, setLocale } from '$lib/paraglide/runtime'
 	import * as Sidebar from '$lib/components/ui/sidebar'
 	import { Separator } from '$lib/components/ui/separator'
 	import { LogOut } from '@lucide/svelte'
-	import type { LayoutData } from '../../../routes/(app)/$types'
-
-	let { data }: { data: LayoutData } = $props()
-
 	const breadcrumbLabel = $derived(() => {
-		const path = page.url.pathname.replace(/^\/de\//, '/')
+		const path = page.url.pathname
 		if (path.startsWith('/studio/gallery')) return m.studio_gallery()
 		if (path.startsWith('/studio/exhibitions')) return m.studio_exhibitions()
 		if (path.startsWith('/studio/pages')) return m.studio_pages()
@@ -35,12 +31,12 @@
 		<!-- Language switcher -->
 		<div class="flex items-center gap-1 text-xs text-muted-foreground">
 			{#each locales as locale}
-				<a
-					href={localizeHref(deLocalizeUrl(page.url).pathname, { locale })}
-					class="px-1 uppercase transition-colors hover:text-foreground {getLocaleForUrl(page.url.href) === locale ? 'text-foreground font-medium' : ''}"
+				<button
+					onclick={() => setLocale(locale, { reload: false })}
+					class="px-1 uppercase transition-colors hover:text-foreground {getLocale() === locale ? 'text-foreground font-medium' : ''}"
 				>
 					{locale}
-				</a>
+				</button>
 				{#if locale !== locales[locales.length - 1]}
 					<span class="opacity-30">|</span>
 				{/if}

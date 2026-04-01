@@ -2,18 +2,41 @@
 	import '../app.css';
 	import favicon from '$lib/assets/favicon.svg';
 	import { page } from '$app/state';
-	import { overwriteGetLocale, getLocaleForUrl } from '$lib/paraglide/runtime';
+	import { overwriteGetLocale, overwriteSetLocale, getLocaleForUrl, localStorageKey, baseLocale, type Locale } from '$lib/paraglide/runtime';
 
 	let { children } = $props();
 
-	// Make all m.*() message functions reactive to URL-based locale changes.
-	// getLocaleForUrl() reads from the reactive page.url, so any locale
-	// switch via URL navigation re-evaluates all translations automatically.
-	overwriteGetLocale(() => getLocaleForUrl(page.url.href));
+	// For studio/auth routes (not in urlPatterns), locale is stored in a
+	// reactive $state variable so switching is instant without a page reload.
+	// localStorage persists the choice across sessions without using cookies.
+	function readLocalStorage(): Locale | undefined {
+		if (typeof localStorage === 'undefined') return undefined;
+		const val = localStorage.getItem(localStorageKey);
+		return (val === 'en' || val === 'de') ? val : undefined;
+	}
+
+	let studioLocale = $state<Locale>(readLocalStorage() ?? baseLocale);
+
+	overwriteGetLocale(() => {
+		try {
+			return getLocaleForUrl(page.url.href);
+		} catch {
+			return studioLocale;
+		}
+	});
+
+	overwriteSetLocale((locale) => {
+		studioLocale = locale;
+		if (typeof localStorage !== 'undefined') {
+			localStorage.setItem(localStorageKey, locale);
+		}
+	});
 </script>
 
 <svelte:head>
 	<link rel="icon" href={favicon} />
 </svelte:head>
 
-{@render children()}
+{#key studioLocale}
+	{@render children()}
+{/key}

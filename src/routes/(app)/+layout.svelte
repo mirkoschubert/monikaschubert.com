@@ -10,7 +10,7 @@
 <Sidebar.Provider>
 	<StudioSidebar {data} />
 	<Sidebar.Inset>
-		<StudioHeader {data} />
+		<StudioHeader />
 		<main class="flex flex-1 flex-col gap-4 p-6">
 			{@render children()}
 		</main>
