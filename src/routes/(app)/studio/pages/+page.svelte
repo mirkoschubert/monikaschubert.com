@@ -7,9 +7,9 @@
 	import { Badge } from '$lib/components/ui/badge'
 	import { Button } from '$lib/components/ui/button'
 	import { Plus, Pencil, Trash2 } from '@lucide/svelte'
-	import type { PageData, ActionData } from './$types'
+	import type { PageData } from './$types'
 
-	let { data, form }: { data: PageData; form: ActionData } = $props()
+	let { data }: { data: PageData } = $props()
 
 	let deleteTarget = $state<number | null>(null)
 	let deleteOpen = $state(false)
@@ -42,7 +42,10 @@
 		</Table.Header>
 		<Table.Body>
 			{#each data.pages as p}
-				<Table.Row>
+				<Table.Row
+					class="cursor-pointer hover:bg-muted/50"
+					onclick={() => { window.location.href = `/studio/pages/${p.id}` }}
+				>
 					<Table.Cell class="font-medium">{localize(p.title, 'en')}</Table.Cell>
 					<Table.Cell class="text-muted-foreground">{p.slug}</Table.Cell>
 					<Table.Cell>
@@ -53,7 +56,7 @@
 						{/if}
 					</Table.Cell>
 					<Table.Cell class="text-muted-foreground">{formatDate(p.updatedAt)}</Table.Cell>
-					<Table.Cell>
+					<Table.Cell onclick={(e) => e.stopPropagation()}>
 						<div class="flex items-center gap-1">
 							<Button variant="ghost" size="icon" href="/studio/pages/{p.id}" title={m.common_edit()}>
 								<Pencil class="size-4" />

@@ -2,5 +2,10 @@
   "framework": "sveltekit",
   "installCommand": "pnpm install",
   "buildCommand": "pnpm build",
-  "outputDirectory": ".svelte-kit/output"
+  "outputDirectory": ".svelte-kit/output",
+  "images": {
+    "domains": ["hjftld4lmddu5uxe.public.blob.vercel-storage.com"],
+    "formats": ["image/avif", "image/webp"],
+    "minimumCacheTTL": 2592000
+  }
 }

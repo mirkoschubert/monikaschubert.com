@@ -6,4 +6,4 @@
 	let { data }: { data: PageData } = $props();
 </script>
 
-<PageContent title={m.nav_about()} content={data.page?.content ?? null} />
+<PageContent title={m.nav_about()} content={data.page?.content ?? null} heroImage={data.page?.heroImage ?? null} />

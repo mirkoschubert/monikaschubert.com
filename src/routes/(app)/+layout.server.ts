@@ -4,7 +4,7 @@ import type { LayoutServerLoad } from './$types';
 
 export const load: LayoutServerLoad = async (event) => {
 	if (!event.locals.user) {
-		redirect(302, '/login');
+		redirect(302, '/studio');
 	}
 	await seedRoles();
 	return { user: event.locals.user };

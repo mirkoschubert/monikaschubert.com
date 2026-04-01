@@ -9,6 +9,6 @@ export const load: PageServerLoad = async (event) => {
 export const actions: Actions = {
 	signOut: async (event) => {
 		await auth.api.signOut({ headers: event.request.headers });
-		redirect(302, '/login');
+		redirect(302, '/studio');
 	}
 };

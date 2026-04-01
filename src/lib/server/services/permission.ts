@@ -7,7 +7,7 @@ export async function requirePermission(
 	resource: string,
 	action: string
 ) {
-	if (!user) redirect(302, '/login')
+	if (!user) redirect(302, '/studio')
 	const allowed = await hasPermission(user.role ?? 'editor', resource, action)
 	if (!allowed) error(403, 'Forbidden')
 }
