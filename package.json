@@ -67,6 +67,7 @@
 		"@vercel/blob": "^2.3.2",
 		"codemirror": "^6.0.2",
 		"marked": "^17.0.5",
+		"marked-footnote": "^1.4.0",
 		"postgres": "^3.4.8"
 	}
 }
