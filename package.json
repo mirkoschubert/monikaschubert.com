@@ -54,6 +54,12 @@
     "vite": "^7.3.1",
     "vite-plugin-devtools-json": "^1.0.0"
   },
+  "pnpm": {
+    "ignoredBuiltDependencies": [
+      "@prisma/client",
+      "better-sqlite3"
+    ]
+  },
   "dependencies": {
     "@better-auth/passkey": "^1.5.6",
     "@codemirror/commands": "^6.10.3",
