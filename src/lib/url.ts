@@ -6,8 +6,8 @@
  * No ORIGIN env var needed - works automatically in both environments.
  */
 export function getBaseUrl(): string {
-	if (process.env.VERCEL_PROJECT_PRODUCTION_URL) {
-		return `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
-	}
-	return `http://localhost:${process.env.PORT ?? '5173'}`
+  if (process.env.VERCEL_PROJECT_PRODUCTION_URL) {
+    return `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+  }
+  return `http://localhost:${process.env.PORT ?? '5173'}`
 }

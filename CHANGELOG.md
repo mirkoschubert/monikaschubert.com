@@ -10,6 +10,7 @@ Format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [0.2.0] - 2026-03-28
 
 ### Added
+
 - Role-based permissions system with DB-driven capability matrix (role/role_permission tables)
 - Roles admin page with Switch matrix to toggle capabilities per role and resource
 - Session management page: list active sessions grouped by user, revoke single or all sessions
@@ -22,6 +23,7 @@ Format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Release script (scripts/release.sh) with CHANGELOG validation and GitHub release creation
 
 ### Fixed
+
 - Language switcher now updates all translations instantly without page reload
 - Admin creating a new user no longer logs out the current session
 - Session revoke now correctly uses session token instead of session ID
@@ -33,6 +35,7 @@ Format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [0.1.0] - 2026-03-28
 
 ### Added
+
 - Initial project setup with SvelteKit 5, TypeScript, Tailwind v4, shadcn-svelte
 - Better Auth with email/password and passkey support
 - Paraglide i18n - English (default) and German (/de/ prefix), fully reactive

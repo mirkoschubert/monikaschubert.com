@@ -1,12 +1,12 @@
-export type LocalizedString = { en: string; de: string };
+export type LocalizedString = { en: string; de: string }
 
-export type Locale = 'en' | 'de';
+export type Locale = 'en' | 'de'
 
 export function localize(
-	value: LocalizedString | null | undefined,
-	locale: Locale,
-	fallback = ''
+  value: LocalizedString | null | undefined,
+  locale: Locale,
+  fallback = ''
 ): string {
-	if (!value) return fallback;
-	return value[locale] || value.en || fallback;
+  if (!value) return fallback
+  return value[locale] || value.en || fallback
 }
