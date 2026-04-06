@@ -40,19 +40,24 @@ export const exhibition = pgTable(
     id: serial('id').primaryKey(),
     title: jsonb('title').notNull().$type<LocalizedString>(),
     description: jsonb('description').$type<LocalizedString>(),
-    location: text('location').notNull(),
+    type: text('type').notNull().default('exhibition'),
+    location: jsonb('location').notNull().$type<LocalizedString>(),
     dateFrom: timestamp('date_from').notNull(),
     dateTo: timestamp('date_to'),
-    imageUrl: text('image_url'),
-    published: boolean('published').notNull().default(false),
+    status: text('status').notNull().default('draft'),
     createdAt: timestamp('created_at').notNull().defaultNow(),
     updatedAt: timestamp('updated_at').notNull().defaultNow()
   },
   (table) => [
     index('exhibition_date_idx').on(table.dateFrom),
-    index('exhibition_published_idx').on(table.published)
+    index('exhibition_status_idx').on(table.status)
   ]
 )
+
+export const exhibitionPage = pgTable('exhibition_page', {
+  id: serial('id').primaryKey(),
+  imageUrl: text('image_url')
+})
 
 export const page = pgTable(
   'page',

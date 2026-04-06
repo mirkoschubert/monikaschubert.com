@@ -52,6 +52,25 @@ export const pageSchema = z.object({
   seo_description_de: z.string().trim().max(500)
 })
 
+export const exhibitionSchema = z.object({
+  title_en: localizedStringSchema.min(1, 'English title is required'),
+  title_de: localizedStringSchema,
+  description_en: z.string(),
+  description_de: z.string(),
+  type: z.enum([
+    'vernissage',
+    'solo',
+    'double',
+    'group',
+    'participation',
+    'exhibition'
+  ]),
+  location_en: localizedStringSchema.min(1, 'English location is required'),
+  location_de: localizedStringSchema,
+  date_from: z.string().min(1, 'Start date is required'),
+  date_to: z.string().optional()
+})
+
 export const createUserSchema = z.object({
   name: localizedStringSchema.min(1, 'Name is required'),
   email: emailSchema,

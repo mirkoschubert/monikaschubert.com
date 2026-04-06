@@ -1,7 +1,8 @@
 <script lang="ts">
   import { marked } from '$lib/markdown'
   import { sanitizeHtml } from '$lib/sanitize'
-  import { getLocale } from '$lib/paraglide/runtime'
+  import { getLocaleForUrl } from '$lib/paraglide/runtime'
+  import { page } from '$app/state'
   import { localize } from '$lib/types'
   import { vercelImg } from '$lib/utils/image'
   import type { LocalizedString } from '$lib/server/db/schema'
@@ -16,7 +17,7 @@
     heroImage?: string | null
   } = $props()
 
-  const locale = getLocale()
+  const locale = $derived(getLocaleForUrl(page.url.href))
   const html = $derived(
     content
       ? sanitizeHtml(marked.parse(localize(content, locale)) as string)

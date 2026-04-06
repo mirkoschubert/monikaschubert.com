@@ -45,11 +45,11 @@ const handleSecurityHeaders: Handle = async ({ event, resolve }) => {
     'Content-Security-Policy',
     [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-inline'",
+      "script-src 'self' 'unsafe-inline' https://stats.papierlos.eu",
       "style-src 'self' 'unsafe-inline'",
       "img-src 'self' data: https://*.blob.vercel-storage.com",
       "font-src 'self'",
-      "connect-src 'self'",
+      "connect-src 'self' https://stats.papierlos.eu",
       "frame-ancestors 'none'",
       "base-uri 'self'",
       "form-action 'self'"

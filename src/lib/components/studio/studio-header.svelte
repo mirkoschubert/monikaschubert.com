@@ -1,10 +1,11 @@
 <script lang="ts">
   import { page } from '$app/state'
   import * as m from '$lib/paraglide/messages.js'
-  import { locales, getLocale, setLocale } from '$lib/paraglide/runtime'
+  import { locales, getLocaleForUrl, setLocale } from '$lib/paraglide/runtime'
   import * as Sidebar from '$lib/components/ui/sidebar'
   import { Separator } from '$lib/components/ui/separator'
   import { LogOut } from '@lucide/svelte'
+  const currentLocale = $derived(getLocaleForUrl(page.url.href))
   const breadcrumbLabel = $derived(() => {
     const path = page.url.pathname
     if (path.startsWith('/studio/gallery')) return m.studio_gallery()
@@ -36,7 +37,7 @@
       {#each locales as locale (locale)}
         <button
           onclick={() => setLocale(locale, { reload: false })}
-          class="px-1 uppercase transition-colors hover:text-foreground {getLocale() ===
+          class="px-1 uppercase transition-colors hover:text-foreground {currentLocale ===
           locale
             ? 'text-foreground font-medium'
             : ''}"

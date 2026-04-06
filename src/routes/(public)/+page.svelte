@@ -1,11 +1,12 @@
 <script lang="ts">
-  import { getLocale } from '$lib/paraglide/runtime'
+  import { getLocaleForUrl } from '$lib/paraglide/runtime'
+  import { page } from '$app/state'
   import { localize } from '$lib/types'
   import { vercelImg } from '$lib/utils/image'
   import type { PageData } from './$types'
 
   let { data }: { data: PageData } = $props()
-  let locale = getLocale()
+  let locale = $derived(getLocaleForUrl(page.url.href))
 </script>
 
 <div class="mx-auto max-w-5xl px-4 py-12">
