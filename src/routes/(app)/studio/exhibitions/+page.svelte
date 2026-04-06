@@ -1,5 +1,6 @@
 <script lang="ts">
   import { enhance } from '$app/forms'
+  import { tick } from 'svelte'
   import * as m from '$lib/paraglide/messages.js'
   import { localize } from '$lib/types'
   import * as Table from '$lib/components/ui/table'
@@ -14,13 +15,11 @@
 
   let deleteTarget = $state<number | null>(null)
   let deleteOpen = $state(false)
-  let pageImage = $derived(data.exhibitionPage?.imageUrl ?? '')
-  let uploadedUrl = $state<string | null>(null)
+  let serverImage = $derived(data.exhibitionPage?.imageUrl ?? '')
+  let pendingImage = $state<string | null>(null)
+  let currentImage = $derived(pendingImage !== null ? pendingImage : serverImage)
   let uploading = $state(false)
   let uploadError = $state('')
-
-  // null = use server value, '' = explicitly removed, string = newly uploaded
-  let currentImage = $derived(uploadedUrl !== null ? uploadedUrl : pageImage)
   let imageForm = $state<HTMLFormElement | null>(null)
 
   async function handleImageUpload(e: Event) {
@@ -39,7 +38,8 @@
       })
       if (!res.ok) throw new Error('Upload failed')
       const responseData = await res.json()
-      uploadedUrl = responseData.url as string
+      pendingImage = responseData.url as string
+      await tick()
       imageForm?.requestSubmit()
     } catch {
       uploadError = m.exhibition_hero_upload_error()
@@ -147,12 +147,7 @@
     bind:this={imageForm}
     method="POST"
     action="?/updateImage"
-    use:enhance={() => {
-      return async ({ update }) => {
-        await update()
-        uploadedUrl = null
-      }
-    }}
+    use:enhance={() => async () => {}}
   >
     <input type="hidden" name="image_url" value={currentImage} />
 
@@ -173,9 +168,10 @@
             />
             <button
               type="button"
-              onclick={() => {
-                uploadedUrl = ''
-                setTimeout(() => imageForm?.requestSubmit())
+              onclick={async () => {
+                pendingImage = ''
+                await tick()
+                imageForm?.requestSubmit()
               }}
               class="absolute right-2 top-2 flex size-7 items-center justify-center rounded-md bg-background/80 text-muted-foreground backdrop-blur-sm transition-colors hover:bg-background hover:text-foreground"
               title={m.exhibition_hero_remove()}
