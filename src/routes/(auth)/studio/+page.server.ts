@@ -3,6 +3,8 @@ import { auth } from '$lib/server/auth'
 import { db } from '$lib/server/db'
 import { user } from '$lib/server/db/auth.schema'
 import { count } from 'drizzle-orm'
+import { loginSchema, registerSchema, parseFormData } from '$lib/validation'
+import { rateLimit, getClientIp } from '$lib/server/rate-limit'
 import type { Actions, PageServerLoad } from './$types'
 
 export const load: PageServerLoad = async (event) => {
@@ -16,12 +18,20 @@ export const load: PageServerLoad = async (event) => {
 
 export const actions: Actions = {
   signIn: async (event) => {
+    const ip = getClientIp(event.request)
+    const rl = rateLimit(`login:${ip}`, 5, 15 * 60 * 1000)
+    if (!rl.allowed) {
+      return fail(429, {
+        error: `Too many attempts. Try again in ${rl.retryAfter}s`
+      })
+    }
+
     const data = await event.request.formData()
-    const email = data.get('email')?.toString().trim() ?? ''
-    const password = data.get('password')?.toString() ?? ''
+    const parsed = parseFormData(loginSchema, data)
+    if (!parsed.success) return fail(400, { error: parsed.error })
 
     const result = await auth.api.signInEmail({
-      body: { email, password },
+      body: parsed.data,
       asResponse: true
     })
 
@@ -33,13 +43,20 @@ export const actions: Actions = {
   },
 
   register: async (event) => {
+    const ip = getClientIp(event.request)
+    const rl = rateLimit(`register:${ip}`, 3, 60 * 60 * 1000)
+    if (!rl.allowed) {
+      return fail(429, {
+        error: `Too many attempts. Try again in ${rl.retryAfter}s`
+      })
+    }
+
     const data = await event.request.formData()
-    const name = data.get('name')?.toString().trim() ?? ''
-    const email = data.get('email')?.toString().trim() ?? ''
-    const password = data.get('password')?.toString() ?? ''
+    const parsed = parseFormData(registerSchema, data)
+    if (!parsed.success) return fail(400, { error: parsed.error })
 
     const result = await auth.api.signUpEmail({
-      body: { name, email, password },
+      body: parsed.data,
       asResponse: true
     })
 

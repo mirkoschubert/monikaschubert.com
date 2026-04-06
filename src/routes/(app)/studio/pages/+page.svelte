@@ -43,7 +43,7 @@
       </Table.Row>
     </Table.Header>
     <Table.Body>
-      {#each data.pages as p}
+      {#each data.pages as p (p.id)}
         <Table.Row
           class="cursor-pointer hover:bg-muted/50"
           onclick={() => {

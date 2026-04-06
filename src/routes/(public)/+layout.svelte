@@ -4,14 +4,15 @@
   import * as Sidebar from '$lib/components/ui/sidebar'
   import PublicSidebar from '$lib/components/public/public-sidebar.svelte'
   import PublicHeader from '$lib/components/public/public-header.svelte'
+  import type { Snippet } from 'svelte'
   import type { LayoutData } from './$types'
   import { UmamiAnalyticsEnv } from '@lukulent/svelte-umami'
 
-  let { children, data }: { children: any; data: LayoutData } = $props()
+  let { children, data }: { children: Snippet; data: LayoutData } = $props()
 </script>
 
 <svelte:head>
-  {#each locales as locale}
+  {#each locales as locale (locale)}
     <link
       rel="alternate"
       hreflang={locale}

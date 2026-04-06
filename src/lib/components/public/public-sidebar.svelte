@@ -74,7 +74,7 @@
           </Sidebar.MenuItem>
 
           {#if isGalleryPage}
-            {#each CATEGORIES as cat, i}
+            {#each CATEGORIES as cat, i (cat.value)}
               <Sidebar.MenuItem>
                 <Sidebar.MenuButton
                   isActive={currentCategory === cat.value}

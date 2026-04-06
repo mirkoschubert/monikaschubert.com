@@ -109,7 +109,7 @@
         <p class="text-sm text-muted-foreground">{m.studio_passkey_hint()}</p>
       {:else}
         <ul class="space-y-2">
-          {#each passkeys as pk}
+          {#each passkeys as pk (pk.id)}
             <li
               class="flex items-center justify-between rounded-md border px-3 py-2"
             >

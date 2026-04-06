@@ -50,14 +50,14 @@
       <Table.Row>
         <Table.Head class="w-36"></Table.Head>
         <Table.Head class="w-36"></Table.Head>
-        {#each data.roles as role}
+        {#each data.roles as role (role.id)}
           <Table.Head class="w-32 text-center">{role.label}</Table.Head>
         {/each}
       </Table.Row>
     </Table.Header>
     <Table.Body>
-      {#each data.resources as resource}
-        {#each data.actions[resource] as action, i}
+      {#each data.resources as resource (resource)}
+        {#each data.actions[resource] as action, i (`${resource}-${action}`)}
           <Table.Row>
             {#if i === 0}
               <Table.Cell
@@ -70,7 +70,7 @@
             <Table.Cell class="text-muted-foreground text-sm">
               {actionLabels[action] ?? action}
             </Table.Cell>
-            {#each data.roles as role}
+            {#each data.roles as role (role.id)}
               <Table.Cell class="text-center">
                 {#if data.canEdit}
                   <form method="POST" action="?/setPermission" use:enhance>

@@ -6,6 +6,15 @@ const marked = new Marked()
 marked.use({ gfm: true })
 marked.use(markedFootnote())
 
+function escapeHtml(text: string): string {
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;')
+}
+
 // Extended syntax via custom tokenizer + renderer
 marked.use({
   extensions: [
@@ -21,7 +30,7 @@ marked.use({
         if (match) return { type: 'highlight', raw: match[0], text: match[1] }
       },
       renderer(token) {
-        return `<mark>${(token as unknown as { text: string }).text}</mark>`
+        return `<mark>${escapeHtml((token as unknown as { text: string }).text)}</mark>`
       }
     },
     // H~2~O subscript
@@ -36,7 +45,7 @@ marked.use({
         if (match) return { type: 'subscript', raw: match[0], text: match[1] }
       },
       renderer(token) {
-        return `<sub>${(token as unknown as { text: string }).text}</sub>`
+        return `<sub>${escapeHtml((token as unknown as { text: string }).text)}</sub>`
       }
     },
     // E=mc^2^ superscript
@@ -51,7 +60,7 @@ marked.use({
         if (match) return { type: 'superscript', raw: match[0], text: match[1] }
       },
       renderer(token) {
-        return `<sup>${(token as unknown as { text: string }).text}</sup>`
+        return `<sup>${escapeHtml((token as unknown as { text: string }).text)}</sup>`
       }
     },
     // Definition list: Term\n: Definition
@@ -87,7 +96,7 @@ marked.use({
         ).items
           .map(
             ({ term, defs }) =>
-              `<dt>${term}</dt>${defs.map((d) => `<dd>${d}</dd>`).join('')}`
+              `<dt>${escapeHtml(term)}</dt>${defs.map((d) => `<dd>${escapeHtml(d)}</dd>`).join('')}`
           )
           .join('')
         return `<dl>${rows}</dl>`

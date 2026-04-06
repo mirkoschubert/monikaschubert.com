@@ -1,7 +1,3 @@
-import { getPageBySlug } from '$lib/server/services/page'
-import type { PageServerLoad } from './$types'
+import { loadPublishedPage } from '$lib/server/loaders/page'
 
-export const load: PageServerLoad = async () => {
-  const p = await getPageBySlug('imprint')
-  return { page: p?.status === 'published' ? p : null }
-}
+export const load = loadPublishedPage('imprint')

@@ -10,7 +10,6 @@
   import { Label } from '$lib/components/ui/label'
   import { Badge } from '$lib/components/ui/badge'
   import {
-    Trash2,
     UserPlus,
     Eye,
     EyeOff,
@@ -63,7 +62,7 @@
       </Table.Row>
     </Table.Header>
     <Table.Body>
-      {#each data.users as u}
+      {#each data.users as u (u.id)}
         <Table.Row class={u.banned ? 'opacity-60' : ''}>
           <Table.Cell class="font-medium">{u.name}</Table.Cell>
           <Table.Cell>{u.email}</Table.Cell>

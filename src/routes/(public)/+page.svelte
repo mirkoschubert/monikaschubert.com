@@ -13,7 +13,7 @@
     <p class="text-center opacity-60">No works published yet.</p>
   {:else}
     <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-      {#each data.artworks as work, i}
+      {#each data.artworks as work, i (work.id)}
         <a href="/gallery/{work.slug}" class="group block">
           <div class="aspect-square overflow-hidden bg-muted">
             <img

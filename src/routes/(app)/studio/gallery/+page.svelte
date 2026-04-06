@@ -29,7 +29,7 @@
         </Table.Row>
       </Table.Header>
       <Table.Body>
-        {#each data.artworks as work}
+        {#each data.artworks as work (work.id)}
           <Table.Row>
             <Table.Cell class="font-medium"
               >{localize(work.title, locale)}</Table.Cell

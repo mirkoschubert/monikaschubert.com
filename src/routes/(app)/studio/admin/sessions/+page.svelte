@@ -16,6 +16,7 @@
 
   // Group sessions by user
   const grouped = $derived(() => {
+    // eslint-disable-next-line svelte/prefer-svelte-reactivity
     const map = new Map<
       string,
       {
@@ -43,7 +44,7 @@
 <div class="max-w-5xl space-y-8">
   <h1 class="text-2xl font-semibold">{m.admin_sessions_title()}</h1>
 
-  {#each grouped() as group}
+  {#each grouped() as group (group.userId)}
     <div class="space-y-2">
       <div class="flex items-center justify-between">
         <div>
@@ -82,7 +83,7 @@
           </Table.Row>
         </Table.Header>
         <Table.Body>
-          {#each group.sessions as s}
+          {#each group.sessions as s (s.id)}
             <Table.Row>
               <Table.Cell class="text-sm text-muted-foreground"
                 >{s.ipAddress ?? '-'}</Table.Cell

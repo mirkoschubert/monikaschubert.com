@@ -2,9 +2,10 @@
   import * as Sidebar from '$lib/components/ui/sidebar'
   import StudioSidebar from '$lib/components/studio/studio-sidebar.svelte'
   import StudioHeader from '$lib/components/studio/studio-header.svelte'
+  import type { Snippet } from 'svelte'
   import type { LayoutData } from './$types'
 
-  let { children, data }: { children: any; data: LayoutData } = $props()
+  let { children, data }: { children: Snippet; data: LayoutData } = $props()
 </script>
 
 <Sidebar.Provider>

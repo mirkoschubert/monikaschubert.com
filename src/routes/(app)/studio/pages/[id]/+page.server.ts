@@ -1,6 +1,7 @@
 import { getPageById, createPage, updatePage } from '$lib/server/services/page'
 import { requirePermission } from '$lib/server/services/permission'
 import { error, fail, redirect } from '@sveltejs/kit'
+import { pageSchema, parseFormData } from '$lib/validation'
 import type { Actions, PageServerLoad } from './$types'
 import type { LocalizedString } from '$lib/server/db/schema'
 
@@ -27,32 +28,27 @@ async function save(
   await requirePermission(locals.user, 'page', isNew ? 'create' : 'update')
 
   const data = await request.formData()
-  const titleEn = data.get('title_en')?.toString().trim() ?? ''
-  const titleDe = data.get('title_de')?.toString().trim() ?? ''
-  const slug = data.get('slug')?.toString().trim() ?? ''
-  const contentEn = data.get('content_en')?.toString() ?? ''
-  const contentDe = data.get('content_de')?.toString() ?? ''
-  const heroImage = data.get('hero_image')?.toString().trim() || null
-  const seoTitleEn = data.get('seo_title_en')?.toString().trim() ?? ''
-  const seoTitleDe = data.get('seo_title_de')?.toString().trim() ?? ''
-  const seoDescEn = data.get('seo_description_en')?.toString().trim() ?? ''
-  const seoDescDe = data.get('seo_description_de')?.toString().trim() ?? ''
+  const parsed = parseFormData(pageSchema, data)
+  if (!parsed.success) return fail(400, { error: parsed.error })
 
-  if (!titleEn) return fail(400, { error: 'title_required' })
-  if (!slug) return fail(400, { error: 'slug_required' })
-
-  const title: LocalizedString = { en: titleEn, de: titleDe }
-  const content: LocalizedString = { en: contentEn, de: contentDe }
+  const d = parsed.data
+  const title: LocalizedString = { en: d.title_en, de: d.title_de }
+  const content: LocalizedString = { en: d.content_en, de: d.content_de }
+  const heroImage = d.hero_image || null
   const seoTitle =
-    seoTitleEn || seoTitleDe ? { en: seoTitleEn, de: seoTitleDe } : null
+    d.seo_title_en || d.seo_title_de
+      ? { en: d.seo_title_en, de: d.seo_title_de }
+      : null
   const seoDescription =
-    seoDescEn || seoDescDe ? { en: seoDescEn, de: seoDescDe } : null
+    d.seo_description_en || d.seo_description_de
+      ? { en: d.seo_description_en, de: d.seo_description_de }
+      : null
 
   try {
     if (isNew) {
       const p = await createPage({
         title,
-        slug,
+        slug: d.slug,
         content,
         heroImage,
         seoTitle,
@@ -64,7 +60,7 @@ async function save(
       const id = Number(params.id)
       await updatePage(id, {
         title,
-        slug,
+        slug: d.slug,
         content,
         heroImage,
         seoTitle,

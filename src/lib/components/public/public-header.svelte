@@ -51,7 +51,7 @@
       <Separator orientation="vertical" class="h-4" />
     {/if}
     <div class="flex items-center gap-1 text-xs text-muted-foreground">
-      {#each locales as locale}
+      {#each locales as locale (locale)}
         <a
           href={localizeHref(deLocalizeUrl(page.url).pathname, { locale })}
           class="px-1 uppercase transition-colors hover:text-foreground {getLocaleForUrl(

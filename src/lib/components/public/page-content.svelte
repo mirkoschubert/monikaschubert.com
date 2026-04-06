@@ -1,5 +1,6 @@
 <script lang="ts">
   import { marked } from '$lib/markdown'
+  import { sanitizeHtml } from '$lib/sanitize'
   import { getLocale } from '$lib/paraglide/runtime'
   import { localize } from '$lib/types'
   import { vercelImg } from '$lib/utils/image'
@@ -17,7 +18,9 @@
 
   const locale = getLocale()
   const html = $derived(
-    content ? (marked.parse(localize(content, locale)) as string) : ''
+    content
+      ? sanitizeHtml(marked.parse(localize(content, locale)) as string)
+      : ''
   )
 
   const widths = [640, 960, 1280, 1920, 2560]
@@ -45,6 +48,7 @@
 <div class="mx-auto max-w-4xl px-6 py-12">
   <h1 class="mb-8 text-3xl font-semibold tracking-tight">{title}</h1>
   {#if html}
+    <!-- eslint-disable-next-line svelte/no-at-html-tags -->
     <div class="page-prose">{@html html}</div>
   {/if}
 </div>

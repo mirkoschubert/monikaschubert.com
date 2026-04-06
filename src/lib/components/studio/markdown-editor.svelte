@@ -23,9 +23,10 @@
 
   let { value = $bindable(''), name, rows = 16, onchange }: Props = $props()
 
+  import type { EditorView } from '@codemirror/view'
+
   let container: HTMLDivElement
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let view: any
+  let view: EditorView | undefined
 
   const wordCount = $derived(
     value.trim() === '' ? 0 : value.trim().split(/\s+/).length

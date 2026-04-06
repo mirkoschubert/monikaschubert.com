@@ -33,7 +33,7 @@
   <div class="ml-auto flex items-center gap-3">
     <!-- Language switcher -->
     <div class="flex items-center gap-1 text-xs text-muted-foreground">
-      {#each locales as locale}
+      {#each locales as locale (locale)}
         <button
           onclick={() => setLocale(locale, { reload: false })}
           class="px-1 uppercase transition-colors hover:text-foreground {getLocale() ===

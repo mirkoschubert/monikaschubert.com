@@ -10,6 +10,15 @@ import {
 import { requirePermission } from '$lib/server/services/permission'
 import { getAllPermissionsForRole } from '$lib/server/services/role'
 import { fail } from '@sveltejs/kit'
+import {
+  createUserSchema,
+  updateUserSchema,
+  setUserRoleSchema,
+  setPasswordSchema,
+  banUserSchema,
+  deleteUserSchema,
+  parseFormData
+} from '$lib/validation'
 import type { Actions, PageServerLoad } from './$types'
 
 export const load: PageServerLoad = async ({ locals }) => {
@@ -33,73 +42,63 @@ export const actions: Actions = {
   delete: async ({ request, locals }) => {
     await requirePermission(locals.user, 'user', 'delete')
     const data = await request.formData()
-    const id = data.get('id')?.toString()
-    if (!id) return fail(400, { error: 'Missing user id' })
-    if (id === locals.user?.id)
+    const parsed = parseFormData(deleteUserSchema, data)
+    if (!parsed.success) return fail(400, { error: parsed.error })
+    if (parsed.data.id === locals.user?.id)
       return fail(400, { error: 'Cannot delete yourself' })
-    await deleteUser(id)
+    await deleteUser(parsed.data.id)
     return { success: true }
   },
 
   setRole: async ({ request, locals }) => {
     await requirePermission(locals.user, 'user', 'set-role')
     const data = await request.formData()
-    const id = data.get('id')?.toString()
-    const role = data.get('role')?.toString()
-    if (!id || !role) return fail(400, { error: 'Missing fields' })
-    if (id === locals.user?.id)
+    const parsed = parseFormData(setUserRoleSchema, data)
+    if (!parsed.success) return fail(400, { error: parsed.error })
+    if (parsed.data.id === locals.user?.id)
       return fail(400, { error: 'Cannot change your own role' })
-    if (role !== 'admin' && role !== 'editor')
-      return fail(400, { error: 'Invalid role' })
-    await setUserRole(id, role)
+    await setUserRole(parsed.data.id, parsed.data.role)
     return { success: true }
   },
 
   update: async ({ request, locals }) => {
     await requirePermission(locals.user, 'user', 'update')
     const data = await request.formData()
-    const id = data.get('id')?.toString()
-    const name = data.get('name')?.toString()
-    const email = data.get('email')?.toString()
-    if (!id) return fail(400, { error: 'Missing user id' })
-    await updateUser(id, { name, email })
+    const parsed = parseFormData(updateUserSchema, data)
+    if (!parsed.success) return fail(400, { error: parsed.error })
+    await updateUser(parsed.data.id, {
+      name: parsed.data.name,
+      email: parsed.data.email
+    })
     return { success: true }
   },
 
   ban: async ({ request, locals }) => {
     await requirePermission(locals.user, 'user', 'ban')
     const data = await request.formData()
-    const id = data.get('id')?.toString()
-    const banned = data.get('banned') === 'true'
-    if (!id) return fail(400, { error: 'Missing user id' })
-    if (id === locals.user?.id)
+    const parsed = parseFormData(banUserSchema, data)
+    if (!parsed.success) return fail(400, { error: parsed.error })
+    if (parsed.data.id === locals.user?.id)
       return fail(400, { error: 'Cannot ban yourself' })
-    await banUser(id, banned)
+    await banUser(parsed.data.id, parsed.data.banned === 'true')
     return { success: true }
   },
 
   setPassword: async ({ request, locals }) => {
     await requirePermission(locals.user, 'user', 'set-password')
     const data = await request.formData()
-    const id = data.get('id')?.toString()
-    const password = data.get('password')?.toString()
-    if (!id || !password) return fail(400, { error: 'Missing fields' })
-    await setUserPassword(id, password, request.headers)
+    const parsed = parseFormData(setPasswordSchema, data)
+    if (!parsed.success) return fail(400, { error: parsed.error })
+    await setUserPassword(parsed.data.id, parsed.data.password, request.headers)
     return { success: true }
   },
 
   create: async ({ request, locals }) => {
     await requirePermission(locals.user, 'user', 'create')
     const data = await request.formData()
-    const name = data.get('name')?.toString()
-    const email = data.get('email')?.toString()
-    const password = data.get('password')?.toString()
-    const role = data.get('role')?.toString()
-    if (!name || !email || !password)
-      return fail(400, { error: 'Missing fields' })
-    if (role !== 'admin' && role !== 'editor')
-      return fail(400, { error: 'Invalid role' })
-    await createUser({ name, email, password, role }, request.headers)
+    const parsed = parseFormData(createUserSchema, data)
+    if (!parsed.success) return fail(400, { error: parsed.error })
+    await createUser(parsed.data, request.headers)
     return { success: true }
   }
 }

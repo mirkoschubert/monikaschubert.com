@@ -24,7 +24,7 @@
     <p class="opacity-60"></p>
   {:else}
     <ul class="space-y-6">
-      {#each data.exhibitions as ex}
+      {#each data.exhibitions as ex (ex.id)}
         <li class="border-b pb-6 last:border-0">
           <h2 class="font-medium">{localize(ex.title, locale)}</h2>
           <p class="mt-1 text-sm text-muted-foreground">
