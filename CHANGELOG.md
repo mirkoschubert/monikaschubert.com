@@ -7,6 +7,37 @@ Format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [0.3.0] - 2026-04-06
+
+### Added
+
+- Exhibition management: full CRUD with service layer, Zod validation, Studio list/edit views and public exhibition page
+- Exhibition date picker: combined text input (YYYY-MM-DD) with calendar popover
+- Exhibition page image upload with auto-save (no explicit save button)
+- Hero image overlay on public pages (About, Contact, Imprint, Privacy, Exhibitions): gradient + H1 over image
+- Sidebar auto-close on navigation on mobile (public and studio)
+
+### Changed
+
+- Studio sidebar and public header: replaced PanelLeft icon with SquarePen for Studio links
+- Exhibition image card in studio list view now compact and consistent with pages editor style
+- Role/resource order in capability matrix: artwork, exhibition, page, user, session
+- CLAUDE.md: corrected indentation setting to 2 spaces
+
+### Fixed
+
+- Missing `requirePermission` guards on `load()` in `/studio/gallery`, `/studio/admin/users` and `/studio/admin/roles`
+- Missing `requirePermission` guard on redirect in `(app)/+layout.server.ts`
+
+### Security
+
+- Security headers added in `hooks.server.ts`: CSP, X-Frame-Options, Referrer-Policy, Permissions-Policy
+- Rate limiting for auth endpoints
+- HTML sanitization for Markdown output
+- Zod validation schemas for all form inputs, with unit tests
+
+---
+
 ## [0.2.0] - 2026-03-28
 
 ### Added
