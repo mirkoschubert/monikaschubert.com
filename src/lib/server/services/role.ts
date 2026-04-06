@@ -5,9 +5,9 @@ import { eq, and } from 'drizzle-orm'
 export const RESOURCES = [
   'artwork',
   'exhibition',
+  'page',
   'user',
-  'session',
-  'page'
+  'session'
 ] as const
 export const ACTIONS: Record<(typeof RESOURCES)[number], string[]> = {
   artwork: ['create', 'update', 'delete', 'publish'],

@@ -9,7 +9,7 @@
   import * as m from '$lib/paraglide/messages.js'
   import * as Sidebar from '$lib/components/ui/sidebar'
   import { Separator } from '$lib/components/ui/separator'
-  import { PanelLeft, Home } from '@lucide/svelte'
+  import { SquarePen, Home } from '@lucide/svelte'
 
   let { user }: { user: { name: string } | null } = $props()
 
@@ -45,7 +45,7 @@
         href="/studio/dashboard"
         class="flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
       >
-        <PanelLeft class="size-4" />
+        <SquarePen class="size-4" />
         <span class="hidden sm:inline">Studio</span>
       </a>
       <Separator orientation="vertical" class="h-4" />

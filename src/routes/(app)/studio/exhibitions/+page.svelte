@@ -4,6 +4,7 @@
   import { localize } from '$lib/types'
   import * as Table from '$lib/components/ui/table'
   import * as Dialog from '$lib/components/ui/dialog'
+  import * as Card from '$lib/components/ui/card'
   import { Badge } from '$lib/components/ui/badge'
   import { Button } from '$lib/components/ui/button'
   import { Plus, Pencil, Trash2, Upload, X } from '@lucide/svelte'
@@ -14,11 +15,13 @@
   let deleteTarget = $state<number | null>(null)
   let deleteOpen = $state(false)
   let pageImage = $derived(data.exhibitionPage?.imageUrl ?? '')
-  let uploadedUrl = $state('')
+  let uploadedUrl = $state<string | null>(null)
   let uploading = $state(false)
   let uploadError = $state('')
 
-  let currentImage = $derived(uploadedUrl || pageImage)
+  // null = use server value, '' = explicitly removed, string = newly uploaded
+  let currentImage = $derived(uploadedUrl !== null ? uploadedUrl : pageImage)
+  let imageForm = $state<HTMLFormElement | null>(null)
 
   async function handleImageUpload(e: Event) {
     const file = (e.target as HTMLInputElement).files?.[0]
@@ -36,7 +39,8 @@
       })
       if (!res.ok) throw new Error('Upload failed')
       const responseData = await res.json()
-      uploadedUrl = responseData.url
+      uploadedUrl = responseData.url as string
+      imageForm?.requestSubmit()
     } catch {
       uploadError = m.exhibition_hero_upload_error()
     } finally {
@@ -72,83 +76,6 @@
         {m.exhibition_new()}
       </Button>
     {/if}
-  </div>
-
-  <!-- Page image -->
-  <div class="rounded-lg border border-border p-4">
-    <div class="mb-3 flex items-center justify-between">
-      <h2 class="text-sm font-medium">{m.exhibition_image()}</h2>
-      {#if currentImage}
-        <form
-          method="POST"
-          action="?/updateImage"
-          use:enhance={() => {
-            uploadedUrl = ''
-          }}
-        >
-          <input type="hidden" name="image_url" value="" />
-          <Button type="submit" variant="ghost" size="sm">
-            <X class="mr-1 size-4" />
-            {m.exhibition_hero_remove()}
-          </Button>
-        </form>
-      {/if}
-    </div>
-
-    <form
-      method="POST"
-      action="?/updateImage"
-      use:enhance={() => {
-        uploadedUrl = ''
-        return async ({ update }) => {
-          await update()
-        }
-      }}
-    >
-      {#if currentImage}
-        <div
-          class="relative mb-3 overflow-hidden rounded-md border border-border"
-        >
-          <img
-            src={currentImage}
-            alt="Exhibitions"
-            class="w-full object-cover"
-            style="aspect-ratio: 16/9"
-          />
-        </div>
-      {/if}
-
-      <input type="hidden" name="image_url" value={currentImage} />
-
-      {#if uploadError}
-        <p class="mb-2 text-xs text-destructive">{uploadError}</p>
-      {/if}
-
-      <div class="flex items-center gap-2">
-        <label
-          class="flex cursor-pointer items-center gap-2 rounded-md border border-dashed border-border px-3 py-2 text-sm text-muted-foreground transition-colors hover:border-ring hover:text-foreground {uploading
-            ? 'pointer-events-none opacity-50'
-            : ''}"
-        >
-          <Upload class="size-4" />
-          <span
-            >{uploading
-              ? m.exhibition_hero_uploading()
-              : m.exhibition_hero_upload()}</span
-          >
-          <input
-            type="file"
-            accept="image/*"
-            class="sr-only"
-            disabled={uploading}
-            onchange={handleImageUpload}
-          />
-        </label>
-        <Button type="submit" size="sm" variant="outline">
-          {m.common_save()}
-        </Button>
-      </div>
-    </form>
   </div>
 
   <Table.Root>
@@ -214,6 +141,76 @@
       {/each}
     </Table.Body>
   </Table.Root>
+
+  <!-- Page image -->
+  <form
+    bind:this={imageForm}
+    method="POST"
+    action="?/updateImage"
+    use:enhance={() => {
+      return async ({ update }) => {
+        await update()
+        uploadedUrl = null
+      }
+    }}
+  >
+    <input type="hidden" name="image_url" value={currentImage} />
+
+    <Card.Root class="w-72">
+      <Card.Header class="pb-3">
+        <Card.Title class="text-sm font-medium"
+          >{m.exhibition_image()}</Card.Title
+        >
+      </Card.Header>
+      <Card.Content class="space-y-3">
+        {#if currentImage}
+          <div class="relative overflow-hidden rounded-md border border-border">
+            <img
+              src={currentImage}
+              alt="Exhibitions"
+              class="w-full object-cover"
+              style="aspect-ratio: 16/9"
+            />
+            <button
+              type="button"
+              onclick={() => {
+                uploadedUrl = ''
+                setTimeout(() => imageForm?.requestSubmit())
+              }}
+              class="absolute right-2 top-2 flex size-7 items-center justify-center rounded-md bg-background/80 text-muted-foreground backdrop-blur-sm transition-colors hover:bg-background hover:text-foreground"
+              title={m.exhibition_hero_remove()}
+            >
+              <X class="size-4" />
+            </button>
+          </div>
+        {/if}
+
+        {#if uploadError}
+          <p class="text-xs text-destructive">{uploadError}</p>
+        {/if}
+
+        <label
+          class="flex w-full cursor-pointer items-center justify-center gap-2 rounded-md border border-dashed border-border px-3 py-4 text-sm text-muted-foreground transition-colors hover:border-ring hover:text-foreground {uploading
+            ? 'pointer-events-none opacity-50'
+            : ''}"
+        >
+          <Upload class="size-4" />
+          <span
+            >{uploading
+              ? m.exhibition_hero_uploading()
+              : m.exhibition_hero_upload()}</span
+          >
+          <input
+            type="file"
+            accept="image/*"
+            class="sr-only"
+            disabled={uploading}
+            onchange={handleImageUpload}
+          />
+        </label>
+      </Card.Content>
+    </Card.Root>
+  </form>
 </div>
 
 <Dialog.Root bind:open={deleteOpen}>

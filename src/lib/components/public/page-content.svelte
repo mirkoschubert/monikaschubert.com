@@ -33,7 +33,7 @@
 </script>
 
 {#if heroImage}
-  <div class="w-full">
+  <div class="relative w-full">
     <img
       src={vercelImg(heroImage, 1280)}
       srcset={heroSrcset}
@@ -43,11 +43,23 @@
       loading="eager"
       fetchpriority="high"
     />
+    <div
+      class="absolute inset-0 bg-linear-to-t from-black/70 via-black/20 to-transparent"
+    ></div>
+    <div class="absolute bottom-0 left-0 right-0">
+      <div class="mx-auto max-w-4xl px-6 pb-8">
+        <h1 class="text-[2.5rem] font-semibold tracking-tight text-white">
+          {title}
+        </h1>
+      </div>
+    </div>
   </div>
 {/if}
 
 <div class="mx-auto max-w-4xl px-6 py-12">
-  <h1 class="mb-8 text-3xl font-semibold tracking-tight">{title}</h1>
+  {#if !heroImage}
+    <h1 class="mb-8 text-3xl font-semibold tracking-tight">{title}</h1>
+  {/if}
   {#if html}
     <!-- eslint-disable-next-line svelte/no-at-html-tags -->
     <div class="page-prose">{@html html}</div>

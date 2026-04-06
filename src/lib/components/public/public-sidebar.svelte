@@ -3,6 +3,7 @@
   import { localizeHref, deLocalizeUrl } from '$lib/paraglide/runtime'
   import * as m from '$lib/paraglide/messages.js'
   import * as Sidebar from '$lib/components/ui/sidebar'
+  import { useSidebar } from '$lib/components/ui/sidebar'
   import {
     Images,
     BookOpen,
@@ -27,6 +28,13 @@
   const currentCategory = $derived(
     page.url.searchParams.get('category') ?? 'all'
   )
+
+  const sidebar = useSidebar()
+  $effect(() => {
+    // close mobile sidebar on navigation
+    void page.url.pathname
+    sidebar.setOpenMobile(false)
+  })
 </script>
 
 <Sidebar.Root collapsible="icon">

@@ -2,6 +2,7 @@
   import { page } from '$app/state'
   import * as m from '$lib/paraglide/messages.js'
   import * as Sidebar from '$lib/components/ui/sidebar'
+  import { useSidebar } from '$lib/components/ui/sidebar'
   import * as DropdownMenu from '$lib/components/ui/dropdown-menu'
   import {
     Images,
@@ -15,7 +16,7 @@
     LogOut,
     ChevronUp,
     Shield,
-    PanelLeft,
+    SquarePen,
     FileText
   } from '@lucide/svelte'
   import type { LayoutData } from '../../../routes/(app)/$types'
@@ -30,6 +31,12 @@
       .join('')
       .toUpperCase()
   )
+
+  const sidebar = useSidebar()
+  $effect(() => {
+    void page.url.pathname
+    sidebar.setOpenMobile(false)
+  })
 </script>
 
 <Sidebar.Root collapsible="icon">
@@ -43,7 +50,7 @@
               <div
                 class="bg-primary text-primary-foreground flex size-8 shrink-0 items-center justify-center rounded-md"
               >
-                <PanelLeft class="size-4" />
+                <SquarePen class="size-4" />
               </div>
               <div class="flex flex-col leading-tight">
                 <span class="font-semibold">Studio</span>

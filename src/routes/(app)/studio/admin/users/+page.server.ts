@@ -22,6 +22,7 @@ import {
 import type { Actions, PageServerLoad } from './$types'
 
 export const load: PageServerLoad = async ({ locals }) => {
+  await requirePermission(locals.user, 'user', 'list')
   const role = locals.user?.role ?? 'editor'
   const [users, perms] = await Promise.all([
     getAllUsers(),

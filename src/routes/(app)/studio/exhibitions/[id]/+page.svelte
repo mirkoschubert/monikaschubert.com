@@ -12,7 +12,7 @@
   import { Badge } from '$lib/components/ui/badge'
   import { ChevronLeft, CalendarIcon } from '@lucide/svelte'
   import { untrack } from 'svelte'
-  import { CalendarDate, getLocalTimeZone } from '@internationalized/date'
+  import { CalendarDate } from '@internationalized/date'
   import MarkdownEditor from '$lib/components/studio/markdown-editor.svelte'
   import type { PageData, ActionData } from './$types'
 
@@ -62,13 +62,22 @@
     })
   )
 
-  function formatDateValue(d: CalendarDate | undefined): string {
+  function calToStr(d: CalendarDate | undefined): string {
     if (!d) return ''
-    return d.toDate(getLocalTimeZone()).toLocaleDateString('de-DE', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
-    })
+    return d.toString()
+  }
+
+  function strToCal(s: string): CalendarDate | undefined {
+    if (s.length !== 10) return undefined
+    const y = Number(s.slice(0, 4))
+    const mo = Number(s.slice(5, 7))
+    const d = Number(s.slice(8, 10))
+    if (!y || !mo || !d) return undefined
+    try {
+      return new CalendarDate(y, mo, d)
+    } catch {
+      return undefined
+    }
   }
 
   const typeOptions = [
@@ -264,71 +273,71 @@
             </div>
 
             <div class="space-y-1.5">
-              <Label>{m.exhibition_date_from()}</Label>
-              <Popover.Root bind:open={dateFromOpen}>
-                <Popover.Trigger>
-                  {#snippet child({ props })}
-                    <Button
-                      variant="outline"
-                      class="w-full justify-start text-left font-normal"
-                      {...props}
-                    >
-                      <CalendarIcon class="mr-2 size-4" />
-                      {dateFromCal
-                        ? formatDateValue(dateFromCal)
-                        : m.exhibition_date_from()}
-                    </Button>
-                  {/snippet}
-                </Popover.Trigger>
-                <Popover.Content class="w-auto p-0">
-                  <Calendar
-                    type="single"
-                    bind:value={dateFromCal}
-                    locale="de-DE"
-                    onValueChange={() => {
-                      if (dateFromCal) {
-                        dateFromStr = dateFromCal.toString()
-                      }
-                      dateFromOpen = false
-                    }}
-                  />
-                </Popover.Content>
-              </Popover.Root>
-              <input type="hidden" name="date_from" value={dateFromStr} />
+              <Label for="date_from">{m.exhibition_date_from()}</Label>
+              <div class="flex gap-2">
+                <Input
+                  id="date_from"
+                  name="date_from"
+                  placeholder="YYYY-MM-DD"
+                  bind:value={dateFromStr}
+                  oninput={() => {
+                    dateFromCal = strToCal(dateFromStr)
+                  }}
+                />
+                <Popover.Root bind:open={dateFromOpen}>
+                  <Popover.Trigger>
+                    {#snippet child({ props })}
+                      <Button variant="outline" size="icon" {...props}>
+                        <CalendarIcon class="size-4" />
+                      </Button>
+                    {/snippet}
+                  </Popover.Trigger>
+                  <Popover.Content class="w-auto p-0" align="end">
+                    <Calendar
+                      type="single"
+                      bind:value={dateFromCal}
+                      onValueChange={() => {
+                        dateFromStr = calToStr(dateFromCal)
+                        dateFromOpen = false
+                      }}
+                    />
+                  </Popover.Content>
+                </Popover.Root>
+              </div>
             </div>
 
             <div class="space-y-1.5">
-              <Label>{m.exhibition_date_to()}</Label>
-              <Popover.Root bind:open={dateToOpen}>
-                <Popover.Trigger>
-                  {#snippet child({ props })}
-                    <Button
-                      variant="outline"
-                      class="w-full justify-start text-left font-normal"
-                      {...props}
-                    >
-                      <CalendarIcon class="mr-2 size-4" />
-                      {dateToCal
-                        ? formatDateValue(dateToCal)
-                        : m.exhibition_date_to()}
-                    </Button>
-                  {/snippet}
-                </Popover.Trigger>
-                <Popover.Content class="w-auto p-0">
-                  <Calendar
-                    type="single"
-                    bind:value={dateToCal}
-                    locale="de-DE"
-                    onValueChange={() => {
-                      if (dateToCal) {
-                        dateToStr = dateToCal.toString()
-                      }
-                      dateToOpen = false
-                    }}
-                  />
-                </Popover.Content>
-              </Popover.Root>
-              <input type="hidden" name="date_to" value={dateToStr} />
+              <Label for="date_to">{m.exhibition_date_to()}</Label>
+              <div class="flex gap-2">
+                <Input
+                  id="date_to"
+                  name="date_to"
+                  placeholder="YYYY-MM-DD"
+                  bind:value={dateToStr}
+                  oninput={() => {
+                    dateToCal = strToCal(dateToStr)
+                  }}
+                />
+                <Popover.Root bind:open={dateToOpen}>
+                  <Popover.Trigger>
+                    {#snippet child({ props })}
+                      <Button variant="outline" size="icon" {...props}>
+                        <CalendarIcon class="size-4" />
+                      </Button>
+                    {/snippet}
+                  </Popover.Trigger>
+                  <Popover.Content class="w-auto p-0" align="end">
+                    <Calendar
+                      type="single"
+                      bind:value={dateToCal}
+                      onValueChange={() => {
+                        dateToStr = calToStr(dateToCal)
+                        dateToOpen = false
+                      }}
+                    />
+                  </Popover.Content>
+                </Popover.Root>
+              </div>
             </div>
           </Card.Content>
         </Card.Root>

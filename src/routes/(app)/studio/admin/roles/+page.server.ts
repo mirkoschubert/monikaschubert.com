@@ -10,6 +10,7 @@ import { fail } from '@sveltejs/kit'
 import type { Actions, PageServerLoad } from './$types'
 
 export const load: PageServerLoad = async ({ locals }) => {
+  await requirePermission(locals.user, 'user', 'set-role')
   const role = locals.user?.role ?? 'editor'
   const [roles, perms] = await Promise.all([
     getRolesWithPermissions(),

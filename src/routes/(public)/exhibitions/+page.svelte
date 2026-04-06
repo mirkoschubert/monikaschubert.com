@@ -64,7 +64,7 @@
 </script>
 
 {#if heroImage}
-  <div class="w-full">
+  <div class="relative w-full">
     <img
       src={vercelImg(heroImage, 1280)}
       srcset={heroSrcset}
@@ -74,13 +74,25 @@
       loading="eager"
       fetchpriority="high"
     />
+    <div
+      class="absolute inset-0 bg-linear-to-t from-black/70 via-black/20 to-transparent"
+    ></div>
+    <div class="absolute bottom-0 left-0 right-0">
+      <div class="mx-auto max-w-4xl px-6 pb-8">
+        <h1 class="text-[2.5rem] font-semibold tracking-tight text-white">
+          {m.studio_exhibitions()}
+        </h1>
+      </div>
+    </div>
   </div>
 {/if}
 
 <div class="mx-auto max-w-4xl px-6 py-12">
-  <h1 class="mb-12 text-3xl font-semibold tracking-tight">
-    {m.studio_exhibitions()}
-  </h1>
+  {#if !heroImage}
+    <h1 class="mb-12 text-3xl font-semibold tracking-tight">
+      {m.studio_exhibitions()}
+    </h1>
+  {/if}
 
   <!-- Current & Upcoming -->
   <section class="mb-16">
@@ -96,7 +108,9 @@
             <div class="mb-2 flex flex-wrap items-center gap-2">
               <Badge variant="outline">{typeLabel(ex.type)}</Badge>
               <span class="text-sm text-muted-foreground">
-                {formatDate(ex.dateFrom)}{#if ex.dateTo}&nbsp;&dash; {formatDate(ex.dateTo)}{/if}
+                {formatDate(ex.dateFrom)}{#if ex.dateTo}&nbsp;&dash; {formatDate(
+                    ex.dateTo
+                  )}{/if}
               </span>
             </div>
             <h3 class="text-lg font-medium">{localize(ex.title, locale)}</h3>
